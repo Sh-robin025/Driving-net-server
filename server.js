@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_USER_PASS}@cluster0.fhgqv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
-    err && console.log("connection error :", err)
+    console.log("connection error :", err)
     const topBannerCollection = client.db("driving-net-school").collection("top-banner-images");
     app.post('/addTopBanner', (req, res) => {
         topBannerCollection.insertOne(req.body.body)
