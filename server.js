@@ -3,13 +3,14 @@ const cors = require('cors');
 require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
 const app = express();
-const port = process.env.DB_PORT || 5555;
+const port = process.env.PORT || 5050;
 
 app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.htm')
+    // res.sendFile(__dirname + '/index.htm')
+    res.send('status: 200')
 })
 
 
