@@ -9,8 +9,8 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-    // res.sendFile(__dirname + '/index.htm')
-    res.send('status: 200')
+    res.sendFile(__dirname + '/index.html')
+    // res.send('status: 200')
 })
 
 
