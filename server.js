@@ -10,7 +10,6 @@ app.use(express.json())
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
-    // res.send('status: 200')
 })
 
 
@@ -19,15 +18,29 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     console.log("connection error :", err)
     const topBannerCollection = client.db("driving-net-school").collection("top-banner-images");
+    const serviceCollection = client.db("driving-net-school").collection("services");
     app.post('/addTopBanner', (req, res) => {
         topBannerCollection.insertOne(req.body.body)
             .then(result => {
                 result.insertedCount > 0 && res.sendStatus(200)
             })
-            .catch(err => console.log("create err : ", err))
+            .catch(err => console.log("banner post err : ", err))
     })
     app.get('/topBanner', (req, res) => {
         topBannerCollection.find()
+            .toArray((err, items) => {
+                res.send(items)
+            })
+    })
+    app.post('/addService', (req, res) => {
+        serviceCollection.insertOne(req.body.body)
+            .then(result => {
+                result.insertedCount > 0 && res.sendStatus(200)
+            })
+            .catch(err => console.log("service post err : ", err))
+    })
+    app.get('/services', (req, res) => {
+        serviceCollection.find()
             .toArray((err, items) => {
                 res.send(items)
             })
