@@ -31,12 +31,6 @@ client.connect(err => {
                 res.send(items)
             })
     })
-    app.get('/services', (req, res) => {
-        topBannerCollection.find()
-            .toArray((err, items) => {
-                res.send("Services coming soon...")
-            })
-    })
 });
 
 
