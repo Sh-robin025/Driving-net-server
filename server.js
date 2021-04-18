@@ -19,6 +19,7 @@ client.connect(err => {
     console.log("connection error :", err)
     const topBannerCollection = client.db("driving-net-school").collection("top-banner-images");
     const serviceCollection = client.db("driving-net-school").collection("services");
+    const courseCollection = client.db("driving-net-school").collection("courses");
     app.post('/addTopBanner', (req, res) => {
         topBannerCollection.insertOne(req.body.body)
             .then(result => {
@@ -34,9 +35,7 @@ client.connect(err => {
     })
     app.post('/addService', (req, res) => {
         serviceCollection.insertOne(req.body.body)
-            .then(result => {
-                result.insertedCount > 0 && res.sendStatus(200)
-            })
+            .then(result => result.insertedCount > 0 && res.sendStatus(200))
             .catch(err => console.log("service post err : ", err))
     })
     app.get('/services', (req, res) => {
@@ -44,6 +43,11 @@ client.connect(err => {
             .toArray((err, items) => {
                 res.send(items)
             })
+    })
+    app.post('/addCourse', (req, res) => {
+        courseCollection.insertOne(req.body.body)
+            .then(result => result.insertedCount > 0 && res.sendStatus(200))
+            .catch(err => console.log("course post err : ", err))
     })
 });
 
