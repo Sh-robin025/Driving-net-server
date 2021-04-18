@@ -29,9 +29,7 @@ client.connect(err => {
     })
     app.get('/topBanner', (req, res) => {
         topBannerCollection.find()
-            .toArray((err, items) => {
-                res.send(items)
-            })
+            .toArray((err, items) => res.send(items))
     })
     app.post('/addService', (req, res) => {
         serviceCollection.insertOne(req.body.body)
@@ -40,14 +38,16 @@ client.connect(err => {
     })
     app.get('/services', (req, res) => {
         serviceCollection.find()
-            .toArray((err, items) => {
-                res.send(items)
-            })
+            .toArray((err, items) => res.send(items))
     })
     app.post('/addCourse', (req, res) => {
         courseCollection.insertOne(req.body.body)
             .then(result => result.insertedCount > 0 && res.sendStatus(200))
             .catch(err => console.log("course post err : ", err))
+    })
+    app.get('/courses', (req, res) => {
+        courseCollection.find()
+            .toArray((err, items) => res.send(items))
     })
 });
 
