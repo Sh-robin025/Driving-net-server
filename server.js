@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const MongoClient = require('mongodb').MongoClient;
+const { json } = require('express');
 const app = express();
 const port = process.env.PORT || 5050;
 
@@ -20,6 +21,8 @@ client.connect(err => {
     const topBannerCollection = client.db("driving-net-school").collection("top-banner-images");
     const serviceCollection = client.db("driving-net-school").collection("services");
     const courseCollection = client.db("driving-net-school").collection("courses");
+    const userCollection = client.db("driving-net-school").collection("users");
+    const adminCollection = client.db("driving-net-school").collection("admins");
     app.post('/addTopBanner', (req, res) => {
         topBannerCollection.insertOne(req.body.body)
             .then(result => {
@@ -48,6 +51,35 @@ client.connect(err => {
     app.get('/courses', (req, res) => {
         courseCollection.find()
             .toArray((err, items) => res.send(items))
+    })
+    app.post('/addUser', (req, res) => {
+        adminCollection.find({ email: req.body.body.email })
+            .toArray((err, admin) => {
+                if (admin.length === 0) {
+                    userCollection.find({ 'data.email': { $exists: true } }, { 'data.email': req.body.body.email })
+                        .toArray((err, result) => {
+                            if (result.length === 0) {
+                                userCollection.insertOne({ data: req.body.body, isCustomer: true })
+                                    .then(result => result.insertedCount > 0 && res.sendStatus(200))
+                                    .catch(err => console.log("user add err :", err))
+                            }
+                        })
+                }
+                adminCollection.updateOne({ email: req.body.body.email }, { $set: req.body.body })
+            })
+
+    })
+    app.get('/user/:email', (req, res) => {
+        console.log(req.params.email)
+        // userCollection.find({ email: req.params.email })
+        adminCollection.find({ email: req.params.email })
+            .toArray((err, admin) => {
+                admin.length !== 0 && res.send(admin)
+                if (admin.length === 0) {
+                    userCollection.find({ 'data.email': { $exists: true } }, { 'data.email': req.params.email })
+                        .toArray((err, user) => res.send(user))
+                }
+            })
     })
 });
 
