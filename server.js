@@ -115,9 +115,17 @@ client.connect(err => {
             .catch(err => console.log("order add err :", err))
     })
     app.get('/orders/:email', (req, res) => {
-        console.log(req.params.email)
-        orderCollection.find({ 'orderData.applicationEmail': { $exists: true } }, { 'orderData.applicationEmail': req.params.email })
-            .toArray((err, items) => res.send(items))
+        adminCollection.find({ "email": req.params.email })
+            .toArray((err, result) => {
+                if (result.length) {
+                    orderCollection.find()
+                        .toArray((err, items) => res.send(items))
+                } else {
+                    orderCollection.find({ "email": req.params.email })
+                        .toArray((err, items) => res.send(items))
+                }
+            })
+
     })
 });
 
