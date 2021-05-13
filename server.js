@@ -22,8 +22,10 @@ client.connect(err => {
     const topBannerCollection = client.db("driving-net-school").collection("top-banner-images");
     const serviceCollection = client.db("driving-net-school").collection("services");
     const courseCollection = client.db("driving-net-school").collection("courses");
-    const userCollection = client.db("driving-net-school").collection("users");
+    const orderCollection = client.db("driving-net-school").collection("orders");
     const adminCollection = client.db("driving-net-school").collection("admins");
+    const userCollection = client.db("driving-net-school").collection("users");
+
     app.post('/addTopBanner', (req, res) => {
         topBannerCollection.insertOne(req.body.body)
             .then(result => {
@@ -36,6 +38,7 @@ client.connect(err => {
             .toArray((err, items) => res.send(items))
     })
     app.delete('/deleteBanner/:id', (req, res) => {
+        console.log(req.params.id)
         topBannerCollection.deleteOne({ _id: ObjectID(req.params.id) })
             .then(result => {
                 result.deletedCount === 1 && res.send("delete success")
@@ -107,7 +110,14 @@ client.connect(err => {
             })
     })
     app.post('/addOrder', (req, res) => {
-        console.log(req.body.body)
+        orderCollection.insertOne(req.body.body)
+            .then(result => result.insertedCount > 0 && res.sendStatus(200))
+            .catch(err => console.log("order add err :", err))
+    })
+    app.get('/orders/:email', (req, res) => {
+        console.log(req.params.email)
+        orderCollection.find({ 'orderData.applicationEmail': { $exists: true } }, { 'orderData.applicationEmail': req.params.email })
+            .toArray((err, items) => res.send(items))
     })
 });
 
