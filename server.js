@@ -97,7 +97,6 @@ client.connect(err => {
                 }
                 adminCollection.updateOne({ email: req.body.body.email }, { $set: req.body.body })
             })
-
     })
     app.get('/user/:email', (req, res) => {
         adminCollection.find({ email: req.params.email })
